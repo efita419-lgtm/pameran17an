@@ -1,0 +1,224 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Pameran Daur Ulang Seru</title>
+    <link rel="stylesheet" href="style.css" />
+    <script src="script.js" defer></script>
+
+    <!-- Favicon / Logo -->
+    <link rel="icon" type="image/png" href="https://github.com/YohanesUser/galeri/blob/main/unnamed.png?raw=true" />
+</head>
+
+<body>
+    <!-- Splash Intro -->
+    <div id="splashIntro" style="position:fixed;top:0;left:0;width:100vw;height:100vh;background:#fff;display:flex;justify-content:center;align-items:center;flex-direction: column;z-index:9999; transition: opacity 0.5s ease;">
+  <img src="https://github.com/YohanesUser/galeri/blob/main/unnamed.png?raw=true" alt="Logo Intro" style="width:150px; height:150px; object-fit:contain;" />
+  <div id="refreshMessage" style="margin-top: 1rem; color: red; font-weight: bold; display: none; text-align: center;">
+    Jika halaman tersendat, silakan <button onclick="location.reload()" style="color: blue; text-decoration: underline; background:none; border:none; cursor:pointer; font-weight: normal;">refresh</button> halaman ini.
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const splash = document.getElementById('splashIntro');
+    const refreshMsg = document.getElementById('refreshMessage');
+
+    if (sessionStorage.getItem('introShown')) {
+      splash.style.display = 'none';
+    } else {
+      setTimeout(() => {
+        splash.classList.add('fade-out');
+        splash.style.opacity = '0';
+
+        splash.addEventListener('transitionend', () => {
+          splash.style.display = 'none';
+        });
+
+        sessionStorage.setItem('introShown', 'true');
+      }, 2000);
+
+      // Jika splash masih tampil setelah 5 detik, tampilkan pesan refresh
+      setTimeout(() => {
+        if (splash.style.display !== 'none') {
+          refreshMsg.style.display = 'block';
+        }
+      }, 5000);
+    }
+  });
+</script>
+
+<style>
+  #splashIntro.fade-out {
+    opacity: 0;
+    transition: opacity 0.5s ease;
+  }
+</style>
+
+    <div id="app" class="min-h-screen p-6">
+        <div class="max-w-5xl mx-auto">
+            <header class="header-responsive mb-6">
+                <div class="header-slideshow-container">
+                    <img src="https://smkn1bantul.sch.id/assets/images/1.jpeg" alt="Gambar Daur Ulang 1" class="slideshow-image" />
+                    <img src="https://smkn1bantul.sch.id/assets/images/2.jpeg" alt="Gambar Daur Ulang 2" class="slideshow-image" />
+                    <img src="https://smkn1bantul.sch.id/assets/images/3.jpeg" alt="Gambar Daur Ulang 3" class="slideshow-image" />
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/b/b6/Front_view_of_SMKN_1_Bantul.jpg" alt="Depan SMKN 1 Bantul" class="slideshow-image" />
+                </div>
+
+                <div class="header-content">
+                    <img src="https://smkn1bantul.sch.id/logo.png" alt="Logo Sekolah" class="w-20 h-20 object-contain rounded-lg shadow-md bg-white p-2" />
+                    <div class="text-white">
+                        <h1 class="text-3xl font-extrabold text-red-700">Pameran Digital Daur Ulang SMK N 1 BANTUL</h1>
+                        <p class="text-sm text-gray-200">Perayaan 17 Agustus 2025 — Kirim foto / video & cerita kreasi daur ulangmu!</p>
+                    </div>
+                </div>
+            </header>
+
+            <nav class="mb-8">
+                <div class="flex border-b border-gray-200">
+                    <button class="tab-btn active" data-tab="form">Unggah Karya</button>
+                    <button class="tab-btn" data-tab="gallery">Lihat Histori Anda</button>
+                </div>
+            </nav>
+
+            <div id="content-container" class="relative overflow-hidden w-full">
+                <section id="form-tab" class="tab-content active">
+                    <div class="bg-white rounded-2xl shadow p-6">
+                        <h2 class="text-xl font-semibold text-red-600 mb-4">Unggah Karya & Ceritamu</h2>
+                        <form id="entryForm" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div class="md:col-span-2 space-y-3">
+                                <div>
+                                    <label for="name" class="block text-sm font-medium text-gray-700">Nama</label>
+                                    <input type="text" id="name" class="form-input mt-1" placeholder="Contoh: Yoan" required />
+                                </div>
+                                <div>
+                                    <label for="kelas" class="block text-sm font-medium text-gray-700">Kelas</label>
+                                    <input type="text" id="kelas" class="form-input mt-1" placeholder="Contoh: X RPL 2" required />
+                                </div>
+                                <div>
+                                    <label for="desc" class="block text-sm font-medium text-gray-700">Deskripsi / Cerita (opsional)</label>
+                                    <textarea id="desc" rows="4" class="form-input mt-1" placeholder="Ceritakan proses atau ide kreatifmu..."></textarea>
+                                </div>
+                                <div>
+                                    <label for="fileInput" class="block text-sm font-medium text-gray-700">Foto / Video (Harap tunggu beberapa saat selama proses upload)</label>
+                                    <input type="file" id="fileInput" accept="image/*,video/*" class="mt-1 block w-full" />
+                                    <p class="text-xs text-gray-500 mt-1">Format yang disarankan: JPG, PNG, MP4. Maks 100MB per file.</p>
+                                </div>
+                            </div>
+                            <div class="md:col-span-1 flex flex-col justify-between">
+                                <div>
+                                    <div class="mb-4">
+                                        <label class="block text-sm font-medium text-gray-700">Preview kartu</label>
+                                        <div id="cardPreview" class="mt-2 border rounded-lg p-3 bg-red-50">
+                                            <div class="flex items-center gap-3">
+                                                <div id="previewInitial" class="w-12 h-12 rounded bg-white flex items-center justify-center text-red-600 font-bold">A</div>
+                                                <div>
+                                                    <div id="previewName" class="text-sm font-semibold text-red-700">Nama</div>
+                                                    <div id="previewKelas" class="text-xs text-gray-600">Kelas</div>
+                                                </div>
+                                            </div>
+                                            <p id="previewDesc" class="text-xs text-gray-700 mt-3">Deskripsi singkat akan muncul di sini...</p>
+                                        </div>
+                                    </div>
+                                    <button type="submit" class="w-full btn-primary">Unggah & Simpan</button>
+                                </div>
+                               <div class="mt-4">
+  <button type="button" id="downloadBtn" class="w-full border border-red-600 text-red-600 py-2 rounded-lg">
+    LIHAT UNGGAHAN PESERTA LAIN
+  </button>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const btn = document.getElementById('downloadBtn');
+    btn.addEventListener('click', () => {
+      window.open('https://docs.google.com/spreadsheets/d/1uwXXhTkv3mQEK-Uu66x_kXr-kRyF2Blc97DOPagX4Aw/edit?usp=sharing', '_blank');
+    });
+  });
+</script>
+
+
+                            </div>
+                        </form>
+                    </div>
+                </section>
+
+                <section id="gallery-tab" class="tab-content absolute top-0 left-0 w-full transform transition-transform duration-300 translate-x-full">
+                    <div class="bg-white rounded-2xl shadow p-6">
+                        <h3 class="text-lg font-semibold text-red-700 mb-4">Galeri Karya (<span id="entryCount">0</span>)</h3>
+                        <div id="galleryContainer">
+                            <div id="emptyMessage" class="text-center py-12">Belum ada unggahan. Ajak temanmu ikut! 🎉</div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <footer class="mt-10 text-center text-sm text-gray-600">© 2025 Pameran Daur Ulang — dibuat untuk Proyek IPAS. Tema: Merah & Putih 🇮🇩 YOHANES ALFARO S</footer>
+        </div>
+    </div>
+
+    <script>
+    document.getElementById("entryForm").addEventListener("submit", async function(e) {
+    e.preventDefault();
+
+    const scriptUrl = "https://script.google.com/macros/s/AKfycbwAY2obVVDAVVwHcQSiMJK3N-_1WGtShXf2GjwW3Y4U8a-xgps39gnyh9rnl_22RjJYZA/exec";
+
+    let fileInput = document.getElementById("fileInput");
+    let files = fileInput.files;
+
+    if (files.length === 0) {
+        alert("Pilih file dulu ya!");
+        return;
+    }
+
+    const nama = document.getElementById("name").value;
+    const kelas = document.getElementById("kelas").value;
+    const deskripsi = document.getElementById("desc").value;
+
+    // Upload file satu per satu
+    for (let i = 0; i < files.length; i++) {
+        let file = files[i];
+
+        let base64Data = await new Promise((resolve, reject) => {
+            let reader = new FileReader();
+            reader.onload = () => resolve(reader.result.split(',')[1]);
+            reader.onerror = reject;
+            reader.readAsDataURL(file);
+        });
+
+        let formData = new FormData();
+        formData.append("nama", nama);
+        formData.append("kelas", kelas);
+        formData.append("deskripsi", deskripsi);
+        formData.append("file", base64Data);
+        formData.append("filename", file.name);
+        formData.append("mimeType", file.type);
+
+        try {
+            let response = await fetch(scriptUrl, {
+                method: "POST",
+                body: formData
+            });
+
+            if (!response.ok) throw new Error("HTTP error " + response.status);
+            let result = await response.json();
+
+            if (result.status === "success") {
+                console.log("File " + file.name + " berhasil diupload: " + result.link);
+            } else {
+                alert("Gagal upload: " + result.message);
+                break;
+            }
+        } catch (error) {
+            alert("Gagal mengunggah: " + error.message);
+            break;
+        }
+    }
+    alert("Semua file berhasil diupload.");
+});
+
+    </script>
+</body>
+</html>
